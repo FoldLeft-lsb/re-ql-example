@@ -1,0 +1,30 @@
+{
+  "name": "reason-scripts",
+  "sources": [
+    "src",
+    "src/jsComponents/wrappers",
+    "src/reComponents"
+  ],
+  "bs-dependencies": [
+    "reason-react",
+    "bs-fetch",
+    "bs-json",
+    "reason-react",
+    "reason-apollo"
+  ],
+  "ppx-flags": [
+    "graphql_ppx/ppx"
+  ],
+  "reason": {
+    "react-jsx": 2
+  },
+  "bsc-flags": [
+    "-bs-super-errors"
+  ],
+  "refmt": 3,
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  },
+  "suffix": ".bs.js"
+}
