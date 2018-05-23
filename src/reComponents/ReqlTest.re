@@ -29,6 +29,12 @@ module ModuleQuery = [%graphql {|
 
 let moduleQuery = ModuleQuery.make();
 
+let prepareQuery = q : module_query_t => {
+  "query": gql(. q##query),
+  "parse": q##parse,
+  "variables": q##variables,
+};
+
 let makeConnection = () : ApolloClient.generatedApolloClient =>
   ReasonApollo.createApolloClient(
     ~link=
@@ -44,14 +50,7 @@ let make = _children => {
   ...component,
   initialState: () => {client: makeConnection()},
   didMount: self =>
-    query(
-      self.state.client,
-      {
-        "query": gql(. moduleQuery##query),
-        "parse": moduleQuery##parse,
-        "variables": moduleQuery##variables,
-      },
-    )
+    query(self.state.client, prepareQuery(moduleQuery))
     |> Js.Promise.then_(res => {
          Js.log("Re didMount: T");
          Js.log(res##data);
