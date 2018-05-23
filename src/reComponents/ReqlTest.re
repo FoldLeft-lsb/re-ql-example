@@ -1,7 +1,5 @@
 let str = ReasonReact.string;
 
-open Types;
-
 module ModuleQuery = [%graphql {|
   {
    hello
