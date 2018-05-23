@@ -15,10 +15,10 @@ export default class GqlTest extends React.Component {
   }
   componentDidMount() {
     this.apolloClient.query({
-      query: gql`{hello}`
+      query: gql`query {hello}`
     }).then(result => {
       console.log("Js didMount: ");
-      console.log(result);
+      console.log(result.data);
     });
   }
   render() {
