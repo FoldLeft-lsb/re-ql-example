@@ -6,7 +6,7 @@ module ModuleQuery = [%graphql {|
  }
 |}];
 
-let moduleQuery = ModuleQuery.make();
+let moduleQuery = ModuleQuery.make() |> Reql.prepareQuery;
 
 let makeConnection = () : ApolloClient.generatedApolloClient =>
   ReasonApollo.createApolloClient(
@@ -30,7 +30,7 @@ let make = _children => {
   ...component,
   initialState: () => {client: makeConnection()},
   didMount: self =>
-    Reql.query(self.state.client, Reql.prepareQuery(moduleQuery))
+    Reql.query(self.state.client, moduleQuery)
     |> Js.Promise.then_(res => {
          Js.log("Re didMount: ");
          Js.log(res##data);
