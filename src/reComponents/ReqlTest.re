@@ -1,39 +1,14 @@
 let str = ReasonReact.string;
 
-type module_query_t = {
-  .
-  "parse": Js.Json.t => {. "hello": option(string)},
-  "query": ReasonApolloTypes.queryString,
-  "variables": Js.Json.t,
-};
-
-[@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
-
-[@bs.send]
-external query :
-  (ApolloClient.generatedApolloClient, module_query_t) => Js.Promise.t('a) =
-  "query";
-
-type state_t = {client: ApolloClient.generatedApolloClient};
-
-type action_t =
-  | NoUpdate;
-
-let component = ReasonReact.reducerComponent("ReqlTest");
+open Types;
 
 module ModuleQuery = [%graphql {|
-     {
-      hello
-    }
-  |}];
+  {
+   hello
+ }
+|}];
 
 let moduleQuery = ModuleQuery.make();
-
-let prepareQuery = q : module_query_t => {
-  "query": gql(. q##query),
-  "parse": q##parse,
-  "variables": q##variables,
-};
 
 let makeConnection = () : ApolloClient.generatedApolloClient =>
   ReasonApollo.createApolloClient(
@@ -46,13 +21,20 @@ let makeConnection = () : ApolloClient.generatedApolloClient =>
     (),
   );
 
+type state_t = {client: ApolloClient.generatedApolloClient};
+
+type action_t =
+  | NoUpdate;
+
+let component = ReasonReact.reducerComponent("ReqlTest");
+
 let make = _children => {
   ...component,
   initialState: () => {client: makeConnection()},
   didMount: self =>
-    query(self.state.client, prepareQuery(moduleQuery))
+    Reql.query(self.state.client, Reql.prepareQuery(moduleQuery))
     |> Js.Promise.then_(res => {
-         Js.log("Re didMount: T");
+         Js.log("Re didMount: ");
          Js.log(res##data);
          Js.Promise.resolve();
        })
