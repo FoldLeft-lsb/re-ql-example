@@ -8,7 +8,7 @@ I'm not certrain what the use-case is yet, I was asked if it were possible to do
 
 This lays out a groundwork for how to do queries this way, it can easily be extended, layed out differently. I mean to do mutations as well, but have not got around to it. 
 
-Made with create-react-app.
+Made with create-react-app with the reason-scripts flag.
 
 Out of habit I use npm to install packages, yarn is fine. ```npm run start``` etc. to run the dev server.
 
@@ -91,7 +91,7 @@ didMount: self =>
     |> ignore,
 ```
 
-That Reql.prepareQuery function just runs the query through the parser. 
+That Reql.prepareQuery function just runs the query through the parser. It turns a string into a ReasonApolloTypes.queryString.
 
 ```
 /* Reql.re */
@@ -104,16 +104,6 @@ let prepareQuery = q => {
   "parse": q##parse,
   "variables": q##variables,
 };
-
-/*
-prepareQuery = (
-  query: string,
-  ...,
-) => (
-  query: ReasonApolloTypes.queryString,
-  ...,
-)
-*/
 ```
 
 You may notice I haven't typed my requests at all, the types were very restrictive and I can get away without them. Reason-apollo does type them I think, but I'm subverting quite a lot of it. 
