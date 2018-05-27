@@ -11,13 +11,12 @@ let moduleQuery = ModuleQuery.make() |> Reql.prepareQuery;
 let makeConnection = () : ApolloClient.generatedApolloClient =>
   ReasonApollo.createApolloClient(
     ~link=
-      ApolloLinks.createHttpLink(
-        ~uri="https://q80vw8qjp.lp.gql.zone/graphql",
-        (),
-      ),
+      ApolloLinks.createHttpLink(~uri="https://api.github.com/graphql", ()),
     ~cache=ApolloInMemoryCache.createInMemoryCache(),
     (),
   );
+
+let githubAuthHeaders = {"Authorization": ""};
 
 type state_t = {client: ApolloClient.generatedApolloClient};
 
@@ -33,7 +32,7 @@ let make = _children => {
     Reql.query(self.state.client, moduleQuery)
     |> Js.Promise.then_(res => {
          Js.log("Re didMount: ");
-         Js.log(res##data);
+         Js.log(res);
          Js.Promise.resolve();
        })
     |> ignore,
