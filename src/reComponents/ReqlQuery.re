@@ -1,25 +1,37 @@
 let str = ReasonReact.string;
 
-module ModuleQuery = [%graphql {|
-  {
-   hello
- }
-|}];
+let githubKey = [%bs.raw {|require('../config').github_key|}];
 
-let moduleQuery = ModuleQuery.make() |> Reql.prepareQuery;
+module ModuleQuery = [%graphql
+  {|
+    query($number_of_repos:Int!) {
+      viewer {
+        name
+         repositories(last: $number_of_repos) {
+           nodes {
+             name
+           }
+         }
+       }
+    }
+|}
+];
 
-let makeConnection = () : ApolloClient.generatedApolloClient =>
+let makeConnection = (~auth_code: string) : ApolloClient.generatedApolloClient =>
   ReasonApollo.createApolloClient(
     ~link=
       ApolloLinks.createHttpLink(
-        ~uri="https://q80vw8qjp.lp.gql.zone/graphql",
+        ~uri="https://api.github.com/graphql",
+        ~headers=
+          Json.Encode.object_([
+            ("Authorization", Js.Json.string("bearer " ++ auth_code)),
+            ("Accept", Js.Json.string("application/vnd.github.v3+json")),
+          ]),
         (),
       ),
     ~cache=ApolloInMemoryCache.createInMemoryCache(),
     (),
   );
-
-let githubAuthHeaders = {"Authorization": ""};
 
 type state_t = {apolloClient: ApolloClient.generatedApolloClient};
 
@@ -30,12 +42,16 @@ let component = ReasonReact.reducerComponent("ReqlQuery");
 
 let make = _children => {
   ...component,
-  initialState: () => {apolloClient: makeConnection()},
+  initialState: () => {apolloClient: makeConnection(~auth_code=githubKey)},
   didMount: self =>
-    Reql.query(self.state.apolloClient, moduleQuery)
+    Reql.query(
+      self.state.apolloClient,
+      ModuleQuery.make(~number_of_repos=3, ()) |> Reql.prepareQuery,
+    )
     |> Js.Promise.then_(res => {
          Js.log("Re didMount: ");
-         Js.log(res##data);
+         Js.log(res##data##viewer##name);
+         /* self.send(DataLoaded(parsed(data))); */
          Js.Promise.resolve();
        })
     |> ignore,
