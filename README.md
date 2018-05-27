@@ -12,6 +12,8 @@ Made with create-react-app with the reason-scripts flag.
 
 Out of habit I use npm to install packages, yarn is fine. ```npm run start``` etc. to run the dev server.
 
+If you want to try it out, feel free to clone this project, or better just copy the code and put it in you own project, there's so little of it. 
+
 #### So
 
 I'm trying to keep this as simple as possible, generic and non-restrictive. 
