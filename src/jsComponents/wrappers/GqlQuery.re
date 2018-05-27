@@ -1,4 +1,4 @@
-[@bs.module "../components/gqlTest"]
+[@bs.module "../components/gqlQuery"]
 external reactClass : ReasonReact.reactClass = "default";
 
 let make = children =>

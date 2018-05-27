@@ -15,7 +15,7 @@ let make = (~message, _children) => {
         <h2> (str(message)) </h2>
       </div>
       <hr />
-      <GqlTest />
-      <ReqlTest />
+      <GqlQuery />
+      <ReqlQuery />
     </div>,
 };

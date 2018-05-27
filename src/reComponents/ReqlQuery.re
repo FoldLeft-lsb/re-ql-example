@@ -11,28 +11,31 @@ let moduleQuery = ModuleQuery.make() |> Reql.prepareQuery;
 let makeConnection = () : ApolloClient.generatedApolloClient =>
   ReasonApollo.createApolloClient(
     ~link=
-      ApolloLinks.createHttpLink(~uri="https://api.github.com/graphql", ()),
+      ApolloLinks.createHttpLink(
+        ~uri="https://q80vw8qjp.lp.gql.zone/graphql",
+        (),
+      ),
     ~cache=ApolloInMemoryCache.createInMemoryCache(),
     (),
   );
 
 let githubAuthHeaders = {"Authorization": ""};
 
-type state_t = {client: ApolloClient.generatedApolloClient};
+type state_t = {apolloClient: ApolloClient.generatedApolloClient};
 
 type action_t =
   | NoUpdate;
 
-let component = ReasonReact.reducerComponent("ReqlTest");
+let component = ReasonReact.reducerComponent("ReqlQuery");
 
 let make = _children => {
   ...component,
-  initialState: () => {client: makeConnection()},
+  initialState: () => {apolloClient: makeConnection()},
   didMount: self =>
-    Reql.query(self.state.client, moduleQuery)
+    Reql.query(self.state.apolloClient, moduleQuery)
     |> Js.Promise.then_(res => {
          Js.log("Re didMount: ");
-         Js.log(res);
+         Js.log(res##data);
          Js.Promise.resolve();
        })
     |> ignore,
